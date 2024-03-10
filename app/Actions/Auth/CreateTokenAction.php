@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Auth;
 
-use App\Http\Requests\CreateTokenRequest;
+use App\Http\Requests\Auth\CreateTokenRequest;
 use App\Models\User;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 
 class CreateTokenAction
 {
     public function execute(CreateTokenRequest $request): array
     {
         $validated = $request->validated();
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
 
         return [
             'user' => $user,

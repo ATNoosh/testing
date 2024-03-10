@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\BaseRequest;
 use App\Rules\CredentialRule;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTokenRequest extends FormRequest
+class CreateTokenRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,19 +24,9 @@ class CreateTokenRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:1000'],
-            'password' => ['bail', 'required', 'email', 'max:1000', new CredentialRule],
+            'password' => ['bail', 'required', 'min:3', 'max:1000', new CredentialRule],
             'device_name' => ['required', 'min:3', 'max:1000'],
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors();
-
-        if ($this->expectsJson()) {
-            return response()->json(['errors' => $errors], 422);
-        }
-
-        parent::failedValidation($validator);
-    }
 }
