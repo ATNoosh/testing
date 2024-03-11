@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\TasksController;
-use App\Http\Requests\CreateTokenRequest;
+use App\Http\Controllers\API\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +24,10 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/user/register', [AuthController::class, 'register']);
     Route::post('/user/createToken', [AuthController::class, 'createToken']);
 
-    Route::resource('tasks', TasksController::class);
+    Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+        Route::resource('tasks', TasksController::class);
+        Route::get('tokens', function () {
+            return request()->user()->tokens;
+        });
+    });
 });
